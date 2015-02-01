@@ -2,37 +2,29 @@
 #define clkPin 3
 
 int r=0,b=0,g=0;
+int i = 0;
+
 void setup() {
 	pinMode (dataPin, OUTPUT) ; //data
 	pinMode (clkPin, OUTPUT) ; //clock
-	Serial.begin(9600);
-	test();
-}
-
-void test() {
-	Serial.println("Test");
-	for (int i = 0; i < 8; i++) {
-		Serial.println(bitRead(120,i));
-	}
-	Serial.println("End Test");
 }
 
 void loop() {
-	digitalWrite(dataPin, HIGH);
-	int i = 0;
-	int j = 0;
-	for (;;)
-	{
-		for (j=0; j < 32; j++) { //32 LEDs
-			// digitalWrite(dataPin,LOW);
+	for (int j=0; j < 32; j++) { //32 LEDs
+		if (j == i) {
+			sendNumber(128); //Blue
+			sendNumber(0); //Green
+			sendNumber(0); //Red
+		} else {
 			sendNumber(255);
-			// digitalWrite(dataPin,LOW);
 			sendNumber(0);
-			// digitalWrite(dataPin,HIGH);
-			sendNumber(255);
-	 	 }
+			sendNumber(0);
+		}
 	}
 	delay(1);
+	i++;
+	if (i > 32)
+		i = 0;
 }
 
 void sendNumber(int number) {
@@ -44,9 +36,7 @@ void sendNumber(int number) {
 
 void sendBit(bool value) {
 	digitalWrite(dataPin, value);
-	delayMicroseconds(20);
 	digitalWrite(clkPin,HIGH);
-	delayMicroseconds(20);
+	delayMicroseconds(1);
 	digitalWrite(clkPin,LOW);
-	delayMicroseconds(20);
 }
