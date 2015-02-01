@@ -1,9 +1,7 @@
 #define dataPin 2
 #define clkPin 3
 
-int r=0,b=0,g=0;
 int i = 0;
-
 void setup() {
 	pinMode (dataPin, OUTPUT) ; //data
 	pinMode (clkPin, OUTPUT) ; //clock
@@ -11,12 +9,12 @@ void setup() {
 
 void loop() {
 	for (int j=0; j < 32; j++) { //32 LEDs
-		if (j == i) {
-			sendNumber(128); //Blue
+		if (i == j) {
+			sendNumber(255); //Blue
 			sendNumber(0); //Green
 			sendNumber(0); //Red
 		} else {
-			sendNumber(255);
+			sendNumber(0);
 			sendNumber(0);
 			sendNumber(0);
 		}
