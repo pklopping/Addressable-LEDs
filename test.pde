@@ -1,7 +1,6 @@
 #define dataPin 2
 #define clkPin 3
 
-int r=0,b=0,g=0;
 int i = 0;
 
 void setup() {
