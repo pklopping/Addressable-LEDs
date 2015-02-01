@@ -28,7 +28,7 @@ void loop() {
 
 void sendNumber(int number) {
 	for (int i = 0; i < 8; i++) {
-		bool value = bitRead(number,i) == 1 ? HIGH : LOW;
+		bool value = bitRead(number,8-i) == 1 ? HIGH : LOW;
 		sendBit(value);
 	}
 }
