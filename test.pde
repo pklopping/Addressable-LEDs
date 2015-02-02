@@ -2,6 +2,7 @@
 #define clkPin 3
 
 int i = 0;
+bool inc = true;
 void setup() {
 	pinMode (dataPin, OUTPUT) ; //data
 	pinMode (clkPin, OUTPUT) ; //clock
@@ -20,9 +21,11 @@ void loop() {
 		}
 	}
 	delay(1);
-	i++;
-	if (i > 32)
-		i = 0;
+	(inc) ? i++ : i--;
+	if (i == 32)
+		inc = false;
+	if (i == 0)
+		inc = true;
 }
 
 void sendNumber(int number) {
