@@ -35,6 +35,7 @@ void loop() {
 	This method will send 8 bits to the strip
 */
 void sendNumber(int number) {
+	number = max(0,min(255,number));
 	for (int i = 0; i < 8; i++) { //Itereate over 8 bits
 		bool value = bitRead(number,8-i) == 1 ? HIGH : LOW; //calculate the bit in question
 		sendBit(value); //Send a singnle bit to the strip
