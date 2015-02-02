@@ -36,7 +36,7 @@ void loop() {
 */
 void sendNumber(int number) {
 	for (int i = 0; i < 8; i++) { //Itereate over 8 bits
-		bool value = bitRead(number,i) == 1 ? HIGH : LOW; //calculate the bit in question
+		bool value = bitRead(number,8-i) == 1 ? HIGH : LOW; //calculate the bit in question
 		sendBit(value); //Send a singnle bit to the strip
 	}
 }
