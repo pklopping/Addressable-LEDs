@@ -11,13 +11,9 @@ void setup() {
 void loop() {
 	for (int j=0; j < 32; j++) { //32 LEDs
 		if (j == i) {
-			sendNumber(128); //Blue
-			sendNumber(0); //Green
-			sendNumber(0); //Red
+			sendPixel(255,0,0);
 		} else {
-			sendNumber(255);
-			sendNumber(0);
-			sendNumber(0);
+			sendPixel(0,0,0);
 		}
 	}
 	delay(1);
@@ -26,6 +22,18 @@ void loop() {
 		i = 0;
 }
 
+/*
+	Sets the color of an individual pixel
+*/
+void sendPixel(int r, int g, int b) {
+	sendNumber(b);
+	sendNumber(g);
+	sendNumber(r);
+}
+
+/*
+	Sends the values for one color of an LED
+*/
 void sendNumber(int number) {
 	for (int i = 0; i < 8; i++) {
 		bool value = bitRead(number,8-i) == 1 ? HIGH : LOW;
@@ -33,6 +41,9 @@ void sendNumber(int number) {
 	}
 }
 
+/*
+	Sends an individual bit
+*/
 void sendBit(bool value) {
 	digitalWrite(dataPin, value);
 	digitalWrite(clkPin,HIGH);
