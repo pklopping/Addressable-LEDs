@@ -3,6 +3,7 @@
 
 int i = 0; //keeps track of where the enabled light currently is
 bool inc = true; //Is the light moving up the strip or down?
+
 void setup() {
 	pinMode (dataPin, OUTPUT) ; //data
 	pinMode (clkPin, OUTPUT) ; //clock
@@ -10,14 +11,10 @@ void setup() {
 
 void loop() {
 	for (int j=0; j < 32; j++) { //32 LEDs
-		if (i == j) {
-			sendNumber(255); //Blue
-			sendNumber(0); //Green
-			sendNumber(0); //Red
+		if (abs(i-j) < 4) {
+			sendPixel(255,0,0);
 		} else {
-			sendNumber(0);
-			sendNumber(0);
-			sendNumber(0);
+			sendPixel(0,0,0);
 		}
 	}
 	delay(1); //A delay of more than 600us will latch the data to the ICs
@@ -30,15 +27,19 @@ void loop() {
 		inc = true;
 }
 
+void sendPixel(int r, int g, int b) {
+	sendNumber(b);
+	sendNumber(g);
+	sendNumber(r);
+}
+
 /*
-	sendNumber(int)
-	This method will send 8 bits to the strip
+	Sends the values for one color of an LED
 */
 void sendNumber(int number) {
-	number = max(0,min(255,number));
-	for (int i = 0; i < 8; i++) { //Itereate over 8 bits
-		bool value = bitRead(number,8-i) == 1 ? HIGH : LOW; //calculate the bit in question
-		sendBit(value); //Send a singnle bit to the strip
+	for (int i = 0; i < 8; i++) {
+		bool value = bitRead(number,8-i) == 1 ? HIGH : LOW;
+		sendBit(value);
 	}
 }
 
