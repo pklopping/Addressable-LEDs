@@ -48,7 +48,7 @@
 #define ROWS 10
 #define COLS 10
 #define CHIPSET WS2811_400
-#define BRIGHTNESS 32
+#define BRIGHTNESS 64
 
 CRGB leds[NUM_LEDS];
 
@@ -58,17 +58,19 @@ bool inc = true;
 
 void setup() { 
 	FastLED.addLeds<CHIPSET, DATA_PIN>(leds, NUM_LEDS);
+	for (int y = 0; y < 10; y++) {
+		for (int x = 0; x < 10; x++) {
+			// setRow(fade, CRGB::White);
+			int loc = 3*(x+(10*y));
+			leds[convertCoords(x,y)].red = heart[loc+0];
+			leds[convertCoords(x,y)].green = heart[loc+1];
+			leds[convertCoords(x,y)].blue = heart[loc+2];
+		}
+	}
+	FastLED.show(BRIGHTNESS);
 }
 
 void loop() {
-	for (int y = 0; y < 10; y++) {
-		for (int x = 0; x < 10; x++) {
-			FastLED.clear();
-			// setRow(fade, CRGB::White);
-			leds[convertCoords(x,y)] = CRGB::White;
-			FastLED.show(BRIGHTNESS);
-		}
-	}
 }
 
 int convertCoords(int x, int y) {
