@@ -18,7 +18,26 @@
 	10 11 12 13 14 15 16 17 17 19
 	20 21 22 23 24 25 26 27 28 29
 	30 31 32 33 34 35 36 37 38 39
-	etc.
+	40 41 42 43 44 45 46 47 48 49
+	50 51 52 53 54 55 56 57 58 59
+	60 61 62 63 64 65 66 67 68 69
+	70 71 72 73 74 75 76 77 78 79
+	80 81 82 83 84 85 86 87 88 89
+	90 91 92 93 94 95 96 97 98 99
+	
+	Which is accessed like 
+	
+	(0,0),(0,1),(0,2),(0,3),(0,4),(0,5),(0,6),(0,7),(0,8),(0,9)
+	(1,0),(1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,7),(1,9)
+	(2,0),(2,1),(2,2),(2,3),(2,4),(2,5),(2,6),(2,7),(2,8),(2,9)
+	(3,0),(3,1),(3,2),(3,3),(3,4),(3,5),(3,6),(3,7),(3,8),(3,9)
+	(4,0),(4,1),(4,2),(4,3),(4,4),(4,5),(4,6),(4,7),(4,8),(4,9)
+	(5,0),(5,1),(5,2),(5,3),(5,4),(5,5),(5,6),(5,7),(5,8),(5,9)
+	(6,0),(6,1),(6,2),(6,3),(6,4),(6,5),(6,6),(6,7),(6,8),(6,9)
+	(7,0),(7,1),(7,2),(7,3),(7,4),(7,5),(7,6),(7,7),(7,8),(7,9)
+	(8,0),(8,1),(8,2),(8,3),(8,4),(8,5),(8,6),(8,7),(8,8),(8,9)
+	(9,0),(9,1),(9,2),(9,3),(9,4),(9,5),(9,6),(9,7),(9,8),(9,9)
+
 */
 
 #include "FastLED.h"
@@ -30,45 +49,36 @@
 #define CHIPSET WS2811_400
 #define BRIGHTNESS 32
 
-struct position {
-	int x;
-	int y;
-};
-
 CRGB leds[NUM_LEDS];
 
-int fade = 0;
+int x = 0;
+int y = 0;
 bool inc = true;
 
 void setup() { 
 	FastLED.addLeds<CHIPSET, DATA_PIN>(leds, NUM_LEDS);
-	Serial.begin(9600);
 }
 
 void loop() {
-	FastLED.clear();
-	setRow(fade, CRGB::White);
-	FastLED.show(BRIGHTNESS);
-	(inc) ? fade++ : fade--;
-	if (fade == 0)
-		inc = true;
-	if (fade == 9)
-		inc = false;
-	Serial.println(fade);
-	delay(50);
-}
-
-void setRow(int start, CRGB color) {
-	for (int i = 0; i < ROWS; i++) {
-		leds[COLS*start+i] = color;
+	for (int y = 0; y < 10; y++) {
+		for (int x = 0; x < 10; x++) {
+			FastLED.clear();
+			// setRow(fade, CRGB::White);
+			leds[convertCoords(x,y)] = CRGB::White;
+			FastLED.show(BRIGHTNESS);
+		}
 	}
 }
 
-void setCol(int start, CRGB color) {
-	for (int i = 0; i < 10; i++) {
-
+int convertCoords(int x, int y) {
+	int pos = 0;
+	if (y % 2 == 0) {
+		pos = pos + (9-x);
+		pos = pos + (9-y)*10;
+	} else {
+		pos = pos + x;
+		pos = pos + (9-y)*10;
 	}
+	return pos;
 }
-
-position 
 
