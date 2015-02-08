@@ -208,7 +208,7 @@ void copyAltToMain() {
 void initializeBoard() {
 	for (uint8_t y=0; y<ROWS; y++) {
 		for (uint8_t x=0; x<COLS; x++) {
-			board[x][y] = naughts[NAUGHT][x][y];
+			board[x][y] = naughts[NAUGHT][y][x];
 		}
 	}
 }
