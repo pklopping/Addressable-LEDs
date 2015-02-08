@@ -49,7 +49,7 @@
 #define DATA_PIN 6
 #define CHIPSET WS2811_400
 #define BRIGHTNESS 64 //maybe eventually tie this into a pot?
-#define NAUGHT 1 //use -1 for random
+#define NAUGHT 2 //use -1 for random
 
 #define BLACK 0,0,0 //Dead and never used
 #define GREEN 16,0,0 //Dead and used
@@ -161,12 +161,10 @@ uint8_t calcNextValue(uint8_t x, uint8_t y) {
 				retVal = 1;
 			break;
 		case 2:
-			if (numAlive < 2)
-				retVal = 1;
-			if (numAlive > 4)
-				retVal = 1;
 			if (numAlive > 1 && numAlive < 4)
 				retVal = 2;
+			else
+				retVal = 1;
 			break;
 		default: 
 			retVal = -1; //Something is wrong...
@@ -180,7 +178,7 @@ uint8_t calcNextValue(uint8_t x, uint8_t y) {
 	I want to build it to accept out of bounds values and wrap around 
 	as if the game board used a toroidal coordinate system 
 */
-uint8_t getValueAtPosition(uint8_t x, uint8_t y) {
+uint8_t getValueAtPosition(int8_t x, int8_t y) {
 	// Serial.print(x);
 	// Serial.print(",");
 	// Serial.println(y);
