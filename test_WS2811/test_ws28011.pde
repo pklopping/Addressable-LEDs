@@ -52,8 +52,6 @@
 
 CRGB leds[NUM_LEDS];
 
-int x = 0;
-int y = 0;
 bool inc = true;
 
 void setup() { 
@@ -84,4 +82,3 @@ int convertCoords(int x, int y) {
 	}
 	return pos;
 }
-

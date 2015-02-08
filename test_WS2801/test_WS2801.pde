@@ -1,3 +1,5 @@
+//This code works with teh WS2801 chip
+
 #define dataPin 2
 #define clkPin 3
 
