@@ -127,7 +127,7 @@ void showBoard() {
 void iterate() {
 	for (uint8_t x=0; x<COLS; x++) {
 		for (uint8_t y=0; y<ROWS; y++) {
-			board_alt[x][y] = `(x,y);
+			board_alt[x][y] = calcNextValue(x,y);
 		}
 	}
 	copyAltToMain();
@@ -136,9 +136,18 @@ void iterate() {
 uint8_t calcNextValue(uint8_t x, uint8_t y) {
 
 	uint8_t currVal = board[x][y];
-	uint8_t retV`	// 	Serial.print("Num alive: ");
-	// 	Serial.println(numAlive);
-	`// }
+	uint8_t retVal = 0;
+	uint8_t numAlive = 0;
+
+	//Count how many alive neighbors it has
+	for (uint8_t i = x-1; i < x+1; i++) {
+		for (uint8_t j = y-1; j < y+1; j++) {
+			if (x != i && y != j){
+				if (board[i][j] == 2)
+					numAlive++;
+			}
+		}
+	}
 	switch (currVal) {
 		case 0:
 			if (numAlive == 3)
