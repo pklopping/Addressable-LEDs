@@ -49,13 +49,14 @@
 #define DATA_PIN 6
 #define CHIPSET WS2811_400
 #define BRIGHTNESS 64 //maybe eventually tie this into a pot?
-#define NAUGHT 2 //use -1 for random
+#define NAUGHT 1 //use -1 for random
 
 #define BLACK 0,0,0 //Dead and never used
 #define GREEN 16,0,0 //Dead and used
 #define BLUE 18,18,237 //ALIVE
 
 bool DEBUG = false;
+
 CRGB leds[ROWS*COLS];
 uint8_t board[ROWS][COLS];
 uint8_t board_alt[ROWS][COLS]; //scratch board
@@ -72,7 +73,7 @@ void setup() {
 void loop() {
 	showBoard();
 	iterate();
-	delay(500);
+	delay(100);
 }
 
 uint8_t convertCoords(uint8_t x, uint8_t y) {
@@ -88,9 +89,9 @@ uint8_t convertCoords(uint8_t x, uint8_t y) {
 }
 
 void showBoard() {
-	if (DEBUG) {
-		Serial.println("Show Board");
-	}
+	// if (DEBUG) {
+	// 	Serial.println("Show Board");
+	// }
 	for (uint8_t y = 0; y < ROWS; y++) {
 		for (uint8_t x = 0; x < COLS; x++) {
 			CRGB newColor;
@@ -108,19 +109,19 @@ void showBoard() {
 					newColor = CRGB(255,0,0); // something is wrong...
 					break;
 			}
-			if (DEBUG) {
-				Serial.print(board[x][y]);
-				Serial.print(", ");
-			}
+			// if (DEBUG) {
+			// 	Serial.print(board[x][y]);
+			// 	Serial.print(", ");
+			// }
 			leds[convertCoords(x,y)] = newColor;
 		}
-		if (DEBUG) {
-			Serial.println(" - ");
-		}
+		// if (DEBUG) {
+		// 	Serial.println(" - ");
+		// }
 	}
-	if (DEBUG) {
-		Serial.print("\n\n");
-	}
+	// if (DEBUG) {
+	// 	Serial.print("\n\n");
+	// }
 	FastLED.show(BRIGHTNESS);
 }
 
@@ -140,10 +141,10 @@ uint8_t calcNextValue(uint8_t x, uint8_t y) {
 	uint8_t numAlive = 0;
 
 	//Count how many alive neighbors it has
-	for (uint8_t i = x-1; i < x+1; i++) {
-		for (uint8_t j = y-1; j < y+1; j++) {
-			if (x != i && y != j){
-				if (board[i][j] == 2)
+	for (int8_t i = x-1; i <= x+1; i++) {
+		for (int8_t j = y-1; j <= y+1; j++) {
+			if (!(x == i && y == j)){
+				if (getValueAtPosition(i,j) == 2)
 					numAlive++;
 			}
 		}
@@ -180,14 +181,19 @@ uint8_t calcNextValue(uint8_t x, uint8_t y) {
 	as if the game board used a toroidal coordinate system 
 */
 uint8_t getValueAtPosition(uint8_t x, uint8_t y) {
+	// Serial.print(x);
+	// Serial.print(",");
+	// Serial.println(y);
+
 	if (x < 0) {
+		Serial.println(x, COLS+x);
 		x = COLS + x;
-	} else if (x > COLS) {
+	} else if (x >= COLS) {
 		x = x - COLS;
 	}
 	if (y < 0) {
 		y = ROWS + y;
-	} else if (y > ROWS) {
+	} else if (y >= ROWS) {
 		y = y - ROWS;
 	}
 	return board[x][y];
@@ -205,12 +211,6 @@ void initializeBoard() {
 	for (uint8_t y=0; y<ROWS; y++) {
 		for (uint8_t x=0; x<COLS; x++) {
 			board[x][y] = naughts[NAUGHT][x][y];
-			if (DEBUG) {
-				Serial.print("Naught: ");
-				Serial.println(naughts[NAUGHT][x][y]);
-				Serial.print("Board: ");
-				Serial.println(board[x][y]);
-			}
 		}
 	}
 }
