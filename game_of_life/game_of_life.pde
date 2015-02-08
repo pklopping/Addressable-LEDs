@@ -40,8 +40,6 @@
 
 */
 
-#define DEBUG true;
-
 #define ROWS 10
 #define COLS 10
 
@@ -57,6 +55,7 @@
 #define GREEN 181,236,162 //Dead and used
 #define BLUE 18,18,237 //ALIVE
 
+bool DEBUG = true;
 CRGB leds[ROWS*COLS];
 uint8_t board[ROWS][COLS];
 uint8_t board_alt[ROWS][COLS]; //scratch board
@@ -64,6 +63,10 @@ uint8_t board_alt[ROWS][COLS]; //scratch board
 void setup() { 
 	FastLED.addLeds<CHIPSET, DATA_PIN>(leds, ROWS*COLS);
 	initializeBoard();
+	if (DEBUG) {
+		Serial.begin(9600);
+		Serial.println("Debugging Mode");
+	}
 }
 
 void loop() {
@@ -85,23 +88,38 @@ uint8_t convertCoords(uint8_t x, uint8_t y) {
 }
 
 void showBoard() {
+	if (DEBUG) {
+		Serial.println("Show Board");
+	}
 	for (uint8_t y = 0; y < 10; y++) {
 		for (uint8_t x = 0; x < 10; x++) {
+			CRGB newColor;
 			switch(board[x][y]) {
 				case 0: // Dead and never used
-					leds[convertCoords(x,y)] = CRGB(BLACK);
+					newColor= CRGB(BLACK);
 					break;
 				case 1: // Dead and previously used
-					leds[convertCoords(x,y)] = CRGB(GREEN);
+					newColor = CRGB(GREEN);
 					break;
 				case 2: // Alive
-					leds[convertCoords(x,y)] = CRGB(BLUE);
+					newColor = CRGB(BLUE);
 					break;
 				default: //Adleiavde
-					leds[convertCoords(x,y)] = CRGB(255,0,0); // something is wrong...
+					newColor = CRGB(255,0,0); // something is wrong...
 					break;
-			}	
+			}
+			if (DEBUG) {
+				Serial.print(newColor);
+				Serial.print(", ");
+			}
+			leds[convertCoords(x,y)] = newColor;
 		}
+		if (DEBUG) {
+			Serial.println(" - ");
+		}
+	}
+	if (DEBUG) {
+		Serial.print("\n\n");
 	}
 	FastLED.show(BRIGHTNESS);
 }
