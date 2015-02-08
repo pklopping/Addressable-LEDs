@@ -40,48 +40,38 @@
 
 */
 
-#include "FastLED.h"
-#include "heart.h"
-
-#define DATA_PIN 6
-#define NUM_LEDS 100
 #define ROWS 10
 #define COLS 10
+
+#include "FastLED.h"
+#include "naughts.h" //initial states for the game
+
+#define DATA_PIN 6
 #define CHIPSET WS2811_400
 #define BRIGHTNESS 64 //maybe eventually tie this into a pot?
+#define NAUGHT 0 //use -1 for random
 
-CRGB leds[NUM_LEDS];
+#define BLACK 0,0,0 //Dead and never used
+#define GREEN 181,236,162 //Dead and used
+#define BLUE 18,18,237 //ALIVE
+
+CRGB leds[ROWS*COLS];
 uint8_t board[ROWS][COLS];
+uint8_t board_alt[ROWS][COLS]; //scratch board
 
 void setup() { 
-	FastLED.addLeds<CHIPSET, DATA_PIN>(leds, NUM_LEDS);
-	configureBoard();
+	FastLED.addLeds<CHIPSET, DATA_PIN>(leds, ROWS*COLS);
+	initializeBoard();
 }
 
 void loop() {
-	for (int y = 0; y < 10; y++) {
-		for (int x = 0; x < 10; x++) {
-			switch(board[x][y]) {
-				case 0: // Dead and never used
-
-					break;
-				case 1: // Dead and previously used
-
-					break;
-				case 2: // Alive
-
-					break;
-				default: //Adleiavde
-
-					break;
-			}	
-		}
-	}
-	FastLED.show(BRIGHTNESS);
+	showBoard();
+	iterate();
+	delay(500);
 }
 
-int convertCoords(int x, int y) {
-	int pos = 0;
+uint8_t convertCoords(uint8_t x, uint8_t y) {
+	uint8_t pos = 0;
 	if (y % 2 == 0) {
 		pos = pos + (9-x);
 		pos = pos + (9-y)*10;
@@ -92,10 +82,100 @@ int convertCoords(int x, int y) {
 	return pos;
 }
 
-void configureBoard() {
-	for (int y=0; y<ROWS; y++) {
-		for (int x=0; x<COLS; x++) {
-			board[x][y] == 0;
+void showBoard() {
+	for (uint8_t y = 0; y < 10; y++) {
+		for (uint8_t x = 0; x < 10; x++) {
+			switch(board[x][y]) {
+				case 0: // Dead and never used
+					leds[convertCoords(x,y)] = CRGB(BLACK);
+					break;
+				case 1: // Dead and previously used
+					leds[convertCoords(x,y)] = CRGB(GREEN);
+					break;
+				case 2: // Alive
+					leds[convertCoords(x,y)] = CRGB(BLUE);
+					break;
+				default: //Adleiavde
+
+					break;
+			}	
+		}
+	}
+	FastLED.show(BRIGHTNESS);
+}
+
+void iterate() {
+	for (uint8_t x=0; x<COLS; x++) {
+		for (uint8_t y=0; y<ROWS; y++) {
+			board_alt[x][y] = calcNextValue(x,y);
+		}
+	}
+	copyAltToMain();
+}
+
+uint8_t calcNextValue(uint8_t x, uint8_t y) {
+
+	uint8_t currVal = board[x][y];
+	uint8_t retVal = 0;
+	uint8_t numAlive = 0;
+
+	//Count how many alive neighbors it has
+	for (uint8_t i = x-1; i < x+1; i++) {
+		for (uint8_t j = y-1; j < y+1; j++) {
+			if (x != i && y != j){
+				if (board[i][j] == 2)
+					numAlive++;
+			}
+		}
+	}
+	switch (currVal) {
+		case 0:
+		case 1:
+			if (numAlive == 3)
+				retVal = 2;
+			break;
+		case 2:
+			if (numAlive < 2)
+				retVal = 1;
+			if (numAlive > 4)
+				retVal = 1;
+			break;
+	}
+	return retVal;
+}
+
+/*
+	Gets a value at a position. 
+	I want to build it to accept out of bounds values and wrap around 
+	as if the game board used a toroidal coordinate system 
+*/
+uint8_t getValueAtPosition(uint8_t x, uint8_t y) {
+	if (x < 0) {
+		x = COLS + x;
+	} else if (x > COLS) {
+		x = x - COLS;
+	}
+	if (y < 0) {
+		y = ROWS + y;
+	} else if (y > ROWS) {
+		y = y - ROWS;
+	}
+	return board[x][y];
+}
+
+void copyAltToMain() {
+	for (uint8_t x = 0; x < COLS; x++) {
+		for (uint8_t y = 0; y < ROWS; y++) {
+			board[x][y] = board_alt[x][y];
+		}
+	}
+}
+
+void initializeBoard() {
+	for (uint8_t y=0; y<ROWS; y++) {
+		for (uint8_t x=0; x<COLS; x++) {
+			board[x][y] == naughts[NAUGHT][x][y];
+			board_alt[x][y] == naughts[NAUGHT][x][y];
 		}
 	}
 }
