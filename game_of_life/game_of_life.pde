@@ -49,24 +49,24 @@
 #define DATA_PIN 6
 #define CHIPSET WS2811_400
 #define BRIGHTNESS 64 //maybe eventually tie this into a pot?
-#define NAUGHT 0 //use -1 for random
+#define NAUGHT 2 //use -1 for random
 
 #define BLACK 0,0,0 //Dead and never used
-#define GREEN 181,236,162 //Dead and used
+#define GREEN 16,0,0 //Dead and used
 #define BLUE 18,18,237 //ALIVE
 
-bool DEBUG = true;
+bool DEBUG = false;
 CRGB leds[ROWS*COLS];
 uint8_t board[ROWS][COLS];
 uint8_t board_alt[ROWS][COLS]; //scratch board
 
 void setup() { 
 	FastLED.addLeds<CHIPSET, DATA_PIN>(leds, ROWS*COLS);
-	initializeBoard();
 	if (DEBUG) {
-		Serial.begin(9600);
+		Serial.begin(115200);
 		Serial.println("Debugging Mode");
 	}
+	initializeBoard();
 }
 
 void loop() {
@@ -79,10 +79,10 @@ uint8_t convertCoords(uint8_t x, uint8_t y) {
 	uint8_t pos = 0;
 	if (y % 2 == 0) {
 		pos = pos + (9-x);
-		pos = pos + (9-y)*10;
+		pos = pos + (9-y)*ROWS;
 	} else {
 		pos = pos + x;
-		pos = pos + (9-y)*10;
+		pos = pos + (9-y)*ROWS;
 	}
 	return pos;
 }
@@ -91,8 +91,8 @@ void showBoard() {
 	if (DEBUG) {
 		Serial.println("Show Board");
 	}
-	for (uint8_t y = 0; y < 10; y++) {
-		for (uint8_t x = 0; x < 10; x++) {
+	for (uint8_t y = 0; y < ROWS; y++) {
+		for (uint8_t x = 0; x < COLS; x++) {
 			CRGB newColor;
 			switch(board[x][y]) {
 				case 0: // Dead and never used
@@ -109,7 +109,7 @@ void showBoard() {
 					break;
 			}
 			if (DEBUG) {
-				Serial.print(newColor);
+				Serial.print(board[x][y]);
 				Serial.print(", ");
 			}
 			leds[convertCoords(x,y)] = newColor;
@@ -127,7 +127,7 @@ void showBoard() {
 void iterate() {
 	for (uint8_t x=0; x<COLS; x++) {
 		for (uint8_t y=0; y<ROWS; y++) {
-			board_alt[x][y] = calcNextValue(x,y);
+			board_alt[x][y] = `(x,y);
 		}
 	}
 	copyAltToMain();
@@ -136,29 +136,27 @@ void iterate() {
 uint8_t calcNextValue(uint8_t x, uint8_t y) {
 
 	uint8_t currVal = board[x][y];
-	uint8_t retVal = 0;
-	uint8_t numAlive = 0;
-
-	//Count how many alive neighbors it has
-	for (uint8_t i = x-1; i < x+1; i++) {
-		for (uint8_t j = y-1; j < y+1; j++) {
-			if (x != i && y != j){
-				if (board[i][j] == 2)
-					numAlive++;
-			}
-		}
-	}
+	uint8_t retV`	// 	Serial.print("Num alive: ");
+	// 	Serial.println(numAlive);
+	`// }
 	switch (currVal) {
 		case 0:
+			if (numAlive == 3)
+				retVal = 2;
+			break;
 		case 1:
 			if (numAlive == 3)
 				retVal = 2;
+			else
+				retVal = 1;
 			break;
 		case 2:
 			if (numAlive < 2)
 				retVal = 1;
 			if (numAlive > 4)
 				retVal = 1;
+			if (numAlive > 1 && numAlive < 4)
+				retVal = 2;
 			break;
 		default: 
 			retVal = -1; //Something is wrong...
@@ -197,8 +195,13 @@ void copyAltToMain() {
 void initializeBoard() {
 	for (uint8_t y=0; y<ROWS; y++) {
 		for (uint8_t x=0; x<COLS; x++) {
-			board[x][y] == naughts[NAUGHT][x][y];
-			board_alt[x][y] == naughts[NAUGHT][x][y];
+			board[x][y] = naughts[NAUGHT][x][y];
+			if (DEBUG) {
+				Serial.print("Naught: ");
+				Serial.println(naughts[NAUGHT][x][y]);
+				Serial.print("Board: ");
+				Serial.println(board[x][y]);
+			}
 		}
 	}
 }
