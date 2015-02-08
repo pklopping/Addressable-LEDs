@@ -40,6 +40,8 @@
 
 */
 
+#define DEBUG true;
+
 #define ROWS 10
 #define COLS 10
 
@@ -96,7 +98,7 @@ void showBoard() {
 					leds[convertCoords(x,y)] = CRGB(BLUE);
 					break;
 				default: //Adleiavde
-
+					leds[convertCoords(x,y)] = CRGB(255,0,0); // something is wrong...
 					break;
 			}	
 		}
@@ -139,6 +141,9 @@ uint8_t calcNextValue(uint8_t x, uint8_t y) {
 				retVal = 1;
 			if (numAlive > 4)
 				retVal = 1;
+			break;
+		default: 
+			retVal = -1; //Something is wrong...
 			break;
 	}
 	return retVal;
