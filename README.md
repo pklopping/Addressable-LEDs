@@ -8,10 +8,10 @@ As of this commit, master contains a folder called game_of_life. I built a 10x10
 
 # WS2801 Setup
 
-LEDs: http://www.amazon.com/gp/product/B008F05N54/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1
-Datasheet: http://www.noodlehed.com/ebay/datasheets/WS2801.pdf
+* LEDs: http://www.amazon.com/gp/product/B008F05N54/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1
+* Datasheet: http://www.noodlehed.com/ebay/datasheets/WS2801.pdf
 
 # WS2811 Setup
 * Requires https://github.com/FastLED/FastLED
-LEDs: http://www.amazon.com/gp/product/B00MECZ06G/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1
-Datasheet: https://www.adafruit.com/datasheets/WS2811.pdf
+* LEDs: http://www.amazon.com/gp/product/B00MECZ06G/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1
+* Datasheet: https://www.adafruit.com/datasheets/WS2811.pdf
