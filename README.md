@@ -13,3 +13,5 @@ Datasheet: http://www.noodlehed.com/ebay/datasheets/WS2801.pdf
 
 # WS2811 Setup
 * Requires https://github.com/FastLED/FastLED
+LEDs: http://www.amazon.com/gp/product/B00MECZ06G/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1
+Datasheet: https://www.adafruit.com/datasheets/WS2811.pdf
